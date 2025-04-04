@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assam Organic Black Tea</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    let cart = [];
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const cartSection = document.getElementById("cart-items");
+      const totalSection = document.getElementById("cart-total");
+      cartSection.innerHTML = "";
+      let total = 0;
+      cart.forEach((item) => {
+        total += item.price;
+        cartSection.innerHTML += `<li class='mb-2'>${item.name} - ₹${item.price}</li>`;
+      });
+      totalSection.innerText = `Total: ₹${total}`;
+    }
+
+    function payOnline(total) {
+      const options = {
+        key: "YOUR_RAZORPAY_KEY", // Replace with your Razorpay key
+        amount: total * 100,
+        currency: "INR",
+        name: "Assam Organic Tea",
+        description: "Order Payment",
+        handler: function (response) {
+          alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+        },
+        prefill: {
+          name: document.querySelector('[name=fullName]').value,
+          contact: document.querySelector('[name=phone]').value,
+        },
+        theme: {
+          color: "#10B981",
+        },
+      };
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+
+    function submitOrder(event) {
+      event.preventDefault();
+      const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+      const totalText = document.getElementById("cart-total").innerText;
+      const total = parseInt(totalText.replace(/\D/g, ""));
+
+      if (paymentMethod === "cod") {
+        alert("Order placed successfully with Cash on Delivery!");
+      } else {
+        payOnline(total);
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-green-100 to-emerald-300 p-6">
+  <h1 class="text-4xl font-bold text-center text-green-800 mb-8">
+    Welcome to Assam Organic Black Tea
+  </h1>
+
+  <section class="bg-white p-6 rounded-2xl shadow-md mb-10 max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-green-800 mb-2">🌿 Benefits of Organic Black Tea</h2>
+    <ul class="list-disc list-inside text-green-900 space-y-2">
+      <li>Rich in antioxidants that boost overall health and immunity</li>
+      <li>Supports heart health by improving blood circulation</li>
+      <li>Enhances metabolism and aids in weight management</li>
+      <li>Free from harmful chemicals – 100% natural and organic</li>
+      <li>Promotes mental alertness without the jitters</li>
+    </ul>
+    <p class="mt-4 text-green-700">
+      Our premium organic black tea is ethically sourced directly from the lush tea gardens of <strong>Assam, India</strong>. Enjoy the bold flavor and aroma that makes Assam tea world-renowned.
+    </p>
+  </section>
+
+  <section class="grid md:grid-cols-3 gap-6 mb-10">
+    <div class="rounded-2xl shadow-xl bg-white p-4 space-y-2">
+      <img src="C:\Users\emita\OneDrive\Desktop\dowloaded images\ad eBay - Assam CTC Black Tea DOOMUR DULLUNG BP FIRST FLUSH Fresh Spring Milk Beverage 1KG.jpg"  alt="1kg Premium Assam Black Tea" class="rounded-xl h-48 w-full object-cover">
+      <h2 class="text-xl font-semibold text-green-900">1kg Premium Assam Black Tea</h2>
+      <p class="text-lg font-bold text-emerald-600">₹600</p>
+      <button onclick="addToCart('1kg Premium Assam Black Tea', 600)" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">Add to Cart</button>
+    </div>
+    <div class="rounded-2xl shadow-xl bg-white p-4 space-y-2">
+      <img src="C:\Users\emita\Downloads\Black Tea.jpg" alt="2kg Loose Leaf Organic Black Tea" class="rounded-xl h-48 w-full object-cover">
+      <h2 class="text-xl font-semibold text-green-900">2kg Loose Leaf Organic Black Tea</h2>
+      <p class="text-lg font-bold text-emerald-600">₹1100</p>
+      <button onclick="addToCart('2kg Loose Leaf Organic Black Tea', 1100)" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">Add to Cart</button>
+    </div>
+    <div class="rounded-2xl shadow-xl bg-white p-4 space-y-2">
+      <img src="C:\Users\emita\Downloads\Tanay Ceylon Black Leaf Tea, 500g - Pack of 2.jpg" alt="Mahapack: 5kg Assam Black Tea" class="rounded-xl h-48 w-full object-cover">
+      <h2 class="text-xl font-semibold text-green-900">Mahapack: 5kg Assam Black Tea</h2>
+      <p class="text-lg font-bold text-emerald-600">₹2500</p>
+      <button onclick="addToCart('Mahapack: 5kg Assam Black Tea', 2500)" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">Add to Cart</button>
+    </div>
+  </section>
+
+  <section class="bg-white p-6 rounded-2xl shadow-md mb-10 max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-green-800 mb-4">🛒 Cart Summary</h2>
+    <ul id="cart-items" class="list-disc list-inside text-green-900"></ul>
+    <p id="cart-total" class="font-bold text-green-900 mt-2">Total: ₹0</p>
+  </section>
+
+  <section class="bg-white p-6 rounded-2xl shadow-md mb-10 max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-green-800 mb-4">🚚 Shipping Details</h2>
+    <form onsubmit="submitOrder(event)">
+      <input type="text" name="fullName" placeholder="Full Name" class="mb-2 p-2 w-full border rounded" required><br>
+      <input type="text" name="address" placeholder="Shipping Address" class="mb-2 p-2 w-full border rounded" required><br>
+      <input type="tel" name="phone" placeholder="Phone Number" class="mb-4 p-2 w-full border rounded" required><br>
+
+      <h3 class="text-lg font-semibold text-green-700 mb-2">Select Payment Method</h3>
+      <label class="flex items-center gap-2 mb-2">
+        <input type="radio" name="payment" value="cod" checked> Cash on Delivery
+      </label>
+      <label class="flex items-center gap-2 mb-4">
+        <input type="radio" name="payment" value="online"> Online Payment
+      </label>
+
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Place Order</button>
+    </form>
+  </section>
+</body>
+</html>
+
+
